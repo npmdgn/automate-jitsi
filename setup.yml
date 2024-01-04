@@ -1,0 +1,29 @@
+- name: Setting up Hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+    use: systemd
+
+- name: Update the system
+  ansible.builtin.apt:
+    upgrade: dist
+    update_cache: yes
+    autoremove: yes
+
+- name: Installing required packages
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: latest
+  loop:
+    - nginx-full
+    - apt-transport-https
+    - gnupg2
+    - curl
+
+- name: Add universe repo
+  ansible.builtin.apt_repository:
+    repo: universe
+    state: present
+
+- name: Update the repository
+  ansible.builtin.apt: 
+    update_cache: true
